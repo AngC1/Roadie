@@ -4,6 +4,19 @@
 
 Este repositorio contiene ejemplos y guías para crear componentes personalizados en Roadie.io, una plataforma de portal de desarrolladores basada en Backstage.
 
+---
+
+## 📖 Documentación
+
+- 📚 **[Índice de Documentación](docs/INDEX.md)** - Navegación completa de todos los recursos
+- ⚡ **[Guía de Inicio Rápido](docs/GUIA-INICIO-RAPIDO.md)** - Tutorial de 10 minutos
+- 🎓 **[Ejemplos Avanzados](docs/EJEMPLOS-AVANZADOS.md)** - Patrones y técnicas avanzadas
+- ❓ **[FAQ](docs/FAQ.md)** - Preguntas frecuentes (Español/English)
+- 🤝 **[Guía de Contribución](CONTRIBUTING.md)** - Cómo contribuir al proyecto
+- 💻 **[Ejemplo de Código](examples/my-first-component/)** - Componente funcional completo
+
+---
+
 ### ¿Qué es Roadie.io?
 
 Roadie.io es una versión gestionada de Backstage de Spotify. Backstage es una plataforma de código abierto para construir portales de desarrolladores que unifican todas tus herramientas, servicios y documentación.
