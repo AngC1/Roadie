@@ -1,0 +1,51 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: mi-primer-componente
+  description: Mi primer componente personalizado en Roadie.io
+  annotations:
+    # Enlaza con tu repositorio de GitHub
+    github.com/project-slug: tu-usuario/mi-primer-componente
+    # Documentación del componente
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - roadie
+    - backstage
+    - plugin
+    - ejemplo
+  links:
+    - url: https://roadie.io/docs/
+      title: Documentación de Roadie
+      icon: docs
+    - url: https://github.com/tu-usuario/mi-primer-componente
+      title: Repositorio
+      icon: github
+spec:
+  type: library
+  lifecycle: experimental
+  owner: tu-equipo
+  system: portal-desarrolladores
+  
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: mi-primer-componente-api
+  description: API del componente personalizado
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: tu-equipo
+  system: portal-desarrolladores
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: Mi Primer Componente API
+      version: 1.0.0
+    paths:
+      /health:
+        get:
+          summary: Health check
+          responses:
+            '200':
+              description: OK
