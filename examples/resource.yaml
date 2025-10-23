@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: payment-database
+  description: PostgreSQL database for payment service
+  annotations:
+    aws.com/rds-instance-id: payment-prod-db
+  tags:
+    - database
+    - postgresql
+spec:
+  type: database
+  owner: platform-team
+  system: payment-platform
+  lifecycle: production

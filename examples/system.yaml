@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: payment-platform
+  description: Payment processing platform
+  tags:
+    - platform
+    - payments
+spec:
+  owner: platform-team
+  domain: commerce

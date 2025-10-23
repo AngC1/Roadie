@@ -1,0 +1,35 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service
+  description: Example microservice for reference
+  annotations:
+    github.com/project-slug: myorg/example-service
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/source-location: url:https://github.com/myorg/example-service/
+    circleci.com/project-slug: github/myorg/example-service
+    pagerduty.com/integration-key: <pagerduty-integration-key>
+  tags:
+    - nodejs
+    - typescript
+    - rest-api
+  links:
+    - url: https://api.example.com
+      title: Production API
+      icon: cloud
+    - url: https://dashboard.example.com
+      title: Monitoring Dashboard
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: backend-team
+  system: payment-platform
+  providesApis:
+    - payment-api
+  consumesApis:
+    - auth-api
+    - notification-api
+  dependsOn:
+    - resource:payment-database
+    - component:auth-service
