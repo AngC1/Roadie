@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: commerce
+  description: E-commerce and payment domain
+  tags:
+    - business-domain
+spec:
+  owner: commerce-leadership

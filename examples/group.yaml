@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: backend-team
+  description: Backend development team
+  tags:
+    - team
+spec:
+  type: team
+  profile:
+    displayName: Backend Team
+    email: backend@example.com
+    picture: https://example.com/teams/backend.png
+  parent: engineering
+  children: []
+  members:
+    - user:john.doe
+    - user:jane.smith

@@ -1,0 +1,33 @@
+site_name: 'Example Service Documentation'
+site_description: 'Complete documentation for Example Service'
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+    - Quick Start: getting-started/quick-start.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Components: architecture/components.md
+    - Data Flow: architecture/data-flow.md
+  - API Reference:
+    - REST API: api/rest.md
+    - Authentication: api/authentication.md
+    - Error Handling: api/errors.md
+  - Deployment:
+    - Local Development: deployment/local.md
+    - Staging: deployment/staging.md
+    - Production: deployment/production.md
+  - Contributing:
+    - Guidelines: contributing/guidelines.md
+    - Code Style: contributing/code-style.md
+    - Testing: contributing/testing.md
+
+plugins:
+  - techdocs-core
+
+theme:
+  name: material
+  palette:
+    primary: indigo

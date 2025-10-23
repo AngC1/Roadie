@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "roadie": {
+      "command": "python",
+      "args": [
+        "-m",
+        "roadie_mcp_server.server"
+      ],
+      "cwd": "/absolute/path/to/Roadie",
+      "env": {}
+    }
+  }
+}

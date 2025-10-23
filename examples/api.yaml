@@ -1,0 +1,109 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: payment-api
+  description: Payment processing REST API
+  tags:
+    - rest
+    - openapi
+    - v1
+spec:
+  type: openapi
+  lifecycle: production
+  owner: backend-team
+  system: payment-platform
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: Payment API
+      version: 1.0.0
+      description: API for processing payments
+      contact:
+        name: Backend Team
+        email: backend@example.com
+    servers:
+      - url: https://api.example.com/v1
+        description: Production
+      - url: https://staging-api.example.com/v1
+        description: Staging
+    paths:
+      /payments:
+        post:
+          summary: Create a payment
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - amount
+                    - currency
+                    - method
+                  properties:
+                    amount:
+                      type: number
+                      description: Payment amount
+                    currency:
+                      type: string
+                      description: Currency code (USD, EUR, etc.)
+                    method:
+                      type: string
+                      description: Payment method (card, bank, etc.)
+          responses:
+            '201':
+              description: Payment created successfully
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+            '400':
+              description: Invalid request
+            '401':
+              description: Unauthorized
+        get:
+          summary: List payments
+          parameters:
+            - name: limit
+              in: query
+              schema:
+                type: integer
+                default: 10
+            - name: offset
+              in: query
+              schema:
+                type: integer
+                default: 0
+          responses:
+            '200':
+              description: List of payments
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                      total:
+                        type: integer
+      /payments/{id}:
+        get:
+          summary: Get payment details
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: string
+          responses:
+            '200':
+              description: Payment details
+            '404':
+              description: Payment not found
