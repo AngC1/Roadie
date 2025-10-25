@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: eulen-components
+  description: Aggregated location for Eulen components managed in /catalog
+spec:
+  targets:
+    - ./catalog/catalog-info.yaml
+    - ./catalog/eulen-frontend-catalog.yaml
+    - ./catalog/eulen-api-catalog.yaml
+    - ./catalog/eulen-spring-catalog.yaml
+    - ./catalog/eulen-api.yaml
