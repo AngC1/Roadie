@@ -5,6 +5,8 @@ metadata:
   description: Global engineering organization
 spec:
   type: organization
+  children:
+    - team-eulen
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Group
@@ -26,6 +28,7 @@ metadata:
 spec:
   type: team
   parent: team-eulen
+  children: []
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Group
@@ -35,3 +38,4 @@ metadata:
 spec:
   type: team
   parent: team-eulen
+  children: []
