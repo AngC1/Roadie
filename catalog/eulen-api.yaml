@@ -7,6 +7,9 @@ metadata:
     - rest
     - api
     - eulen
+  annotations:
+    backstage.io/managed-by-location: file:catalog/eulen-api.yaml
+    backstage.io/managed-by-origin-location: file:catalog-info.yaml
 spec:
   type: openapi
   lifecycle: production

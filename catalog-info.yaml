@@ -10,3 +10,6 @@ spec:
     - ./catalog/eulen-api-catalog.yaml
     - ./catalog/eulen-spring-catalog.yaml
     - ./catalog/eulen-api.yaml
+    - ./catalog/eulen-system.yaml
+    - ./catalog/groups.yaml
+    - ./catalog/openapi.yaml

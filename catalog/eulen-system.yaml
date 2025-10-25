@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: eulen-platform
+  description: Eulen platform composed of frontend, Node.js API and Spring services.
+spec:
+  owner: group:team-eulen

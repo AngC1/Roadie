@@ -1,0 +1,11 @@
+openapi: 3.0.1
+info:
+  title: Eulen REST API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK

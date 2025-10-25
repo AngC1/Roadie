@@ -12,6 +12,8 @@ metadata:
     backstage.io/view-url: https://github.com/AngC1/Roadie/tree/main/src/api
     backstage.io/edit-url: https://github.com/AngC1/Roadie/edit/main/src/api
     backstage.io/api-base-url: https://api.eulen.ayesa.com
+    backstage.io/managed-by-location: file:catalog/eulen-api-catalog.yaml
+    backstage.io/managed-by-origin-location: file:catalog-info.yaml
   tags:
     - api
     - rest

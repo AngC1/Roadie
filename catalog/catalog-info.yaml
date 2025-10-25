@@ -9,6 +9,8 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     roadie.io/enabled: 'true'
     backstage.io/source-location: url:https://github.com/AngC1/Roadie
+    backstage.io/managed-by-location: file:catalog/catalog-info.yaml
+    backstage.io/managed-by-origin-location: file:catalog-info.yaml
   tags:
     - portal
     - eulen

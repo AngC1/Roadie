@@ -12,6 +12,8 @@ metadata:
     backstage.io/view-url: https://github.com/AngC1/Roadie/tree/main/src/eulen
     backstage.io/edit-url: https://github.com/AngC1/Roadie/edit/main/src/eulen
     jenkins.io/job-full-name: Eulen/spring-service-build
+    backstage.io/managed-by-location: file:catalog/eulen-spring-catalog.yaml
+    backstage.io/managed-by-origin-location: file:catalog-info.yaml
   tags:
     - java
     - spring-boot
