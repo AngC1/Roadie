@@ -7,6 +7,11 @@ metadata:
   annotations:
     github.com/project-slug: AngC1/Roadie
     backstage.io/techdocs-ref: dir:.
+    roadie.io/enabled: 'true'
+    backstage.io/source-location: url:https://github.com/AngC1/Roadie
+    backstage.io/view-url: https://github.com/AngC1/Roadie/tree/main/src/api
+    backstage.io/edit-url: https://github.com/AngC1/Roadie/edit/main/src/api
+    backstage.io/api-base-url: https://api.eulen.ayesa.com
   tags:
     - api
     - rest
