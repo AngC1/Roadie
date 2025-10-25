@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: eulen-portal
+  title: Eulen Portal
+  description: Eulen Portal Application Suite
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - portal
+    - eulen
+  links:
+    - url: https://ayesa.roadie.so/
+      title: Roadie Portal
+      icon: dashboard
+spec:
+  type: website
+  lifecycle: production
+  owner: team-eulen
+  system: eulen-platform

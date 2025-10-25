@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: eulen-rest-api
+  description: The Eulen REST API
+  tags:
+    - rest
+    - api
+    - eulen
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-eulen-backend
+  definition:
+    $text: ./openapi.yaml

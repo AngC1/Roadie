@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: eulen-frontend
+  title: Eulen Frontend
+  description: Eulen Angular Frontend Application
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - angular
+    - frontend
+    - typescript
+  links:
+    - url: https://ayesa.roadie.so/
+      title: Roadie Portal
+      icon: dashboard
+spec:
+  type: frontend
+  lifecycle: production
+  owner: team-eulen-frontend
+  system: eulen-platform
+  dependsOn:
+    - component:eulen-api
+  framework: angular

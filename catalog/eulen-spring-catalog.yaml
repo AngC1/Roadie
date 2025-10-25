@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: eulen-spring
+  title: Eulen Spring Service
+  description: Eulen Spring Boot Backend Service
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - java
+    - spring-boot
+    - backend
+  links:
+    - url: https://ayesa.roadie.so/
+      title: Roadie Portal
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-eulen-backend
+  system: eulen-platform
+  dependsOn:
+    - component:eulen-api
+  framework: spring-boot

@@ -1,0 +1,25 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: eulen-api
+  title: Eulen API
+  description: Eulen REST API Service
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - api
+    - rest
+    - nodejs
+  links:
+    - url: https://ayesa.roadie.so/
+      title: Roadie Portal
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: team-eulen-backend
+  system: eulen-platform
+  providesApis:
+    - eulen-rest-api
+  framework: express
