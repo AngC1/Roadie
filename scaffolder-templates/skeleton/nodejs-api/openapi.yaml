@@ -1,0 +1,39 @@
+openapi: 3.0.1
+info:
+  title: ${{ values.name }}
+  description: ${{ values.description }}
+  version: 0.1.0
+servers:
+  - url: http://localhost:${{ values.port }}
+    description: Development server
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  service:
+                    type: string
+  /api/v1/:
+    get:
+      summary: API information
+      responses:
+        '200':
+          description: API details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  description:
+                    type: string

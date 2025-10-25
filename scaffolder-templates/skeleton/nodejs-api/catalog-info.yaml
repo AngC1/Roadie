@@ -1,0 +1,35 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  title: ${{ values.name | capitalize }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
+    backstage.io/techdocs-ref: dir:.
+    roadie.io/enabled: 'true'
+  tags:
+    - nodejs
+    - express
+    - api
+    - rest
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ${{ values.owner }}
+  system: eulen-platform
+  providesApis:
+    - ${{ values.name }}-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: ${{ values.name }}-api
+  description: ${{ values.description }}
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: ${{ values.owner }}
+  system: eulen-platform
+  definition:
+    $text: ./openapi.yaml

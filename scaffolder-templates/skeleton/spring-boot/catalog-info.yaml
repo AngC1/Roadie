@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  title: ${{ values.name | capitalize }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
+    backstage.io/techdocs-ref: dir:.
+    roadie.io/enabled: 'true'
+  tags:
+    - java
+    - spring-boot
+    - backend
+    - microservice
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ${{ values.owner }}
+  system: eulen-platform
