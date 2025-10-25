@@ -6,9 +6,9 @@ metadata:
   description: Eulen Angular Frontend Application
   annotations:
     github.com/project-slug: AngC1/Roadie
-    backstage.io/techdocs-ref: dir:.
-    roadie.io/enabled: 'true'
     backstage.io/source-location: url:https://github.com/AngC1/Roadie
+    backstage.io/techdocs-ref: url:https://github.com/AngC1/Roadie/tree/main
+    roadie.io/enabled: 'true'
     backstage.io/view-url: https://github.com/AngC1/Roadie/tree/main/src/app
     backstage.io/edit-url: https://github.com/AngC1/Roadie/edit/main/src/app
     backstage.io/managed-by-location: file:catalog/eulen-frontend-catalog.yaml

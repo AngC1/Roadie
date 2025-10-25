@@ -6,9 +6,9 @@ metadata:
   description: Eulen Portal Application Suite
   annotations:
     github.com/project-slug: AngC1/Roadie
-    backstage.io/techdocs-ref: dir:.
-    roadie.io/enabled: 'true'
     backstage.io/source-location: url:https://github.com/AngC1/Roadie
+    backstage.io/techdocs-ref: url:https://github.com/AngC1/Roadie/tree/main
+    roadie.io/enabled: 'true'
     backstage.io/managed-by-location: file:catalog/catalog-info.yaml
     backstage.io/managed-by-origin-location: file:catalog-info.yaml
   tags:
