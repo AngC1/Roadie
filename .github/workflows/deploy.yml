@@ -41,36 +41,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Validate YAML files
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install pyyaml
-          echo "Validating catalog YAML files..."
-          python -c "
-          import yaml
-          import sys
-          from pathlib import Path
-          
-          errors = []
-          catalog_files = list(Path('catalog').glob('*.yaml')) + [Path('catalog-info.yaml')]
-          
-          for file in catalog_files:
-              if file.exists():
-                  try:
-                      with open(file) as f:
-                          # Use safe_load_all to handle multiple YAML documents
-                          docs = list(yaml.safe_load_all(f))
-                      print(f'✓ {file} ({len(docs)} document(s))')
-                  except Exception as e:
-                      errors.append(f'{file}: {e}')
-                      print(f'✗ {file}: {e}')
-          
-          if errors:
-              print('\nValidation failed!')
-              sys.exit(1)
-          else:
-              print('\nAll catalog files are valid!')
-          "
+
+      - name: Semantic & structural validation
+        run: |
+          python scripts/validate_catalog.py
 
   build-techdocs:
     name: Build TechDocs
