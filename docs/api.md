@@ -355,4 +355,4 @@ DEBUG=* npm run dev
 
 - [Frontend Documentation](./frontend.md)
 - [Spring Service Documentation](./spring.md)
-- [OpenAPI Specification](../catalog/openapi.yaml)
+- [OpenAPI Specification](https://github.com/AngC1/Roadie/blob/main/catalog/openapi.yaml)
