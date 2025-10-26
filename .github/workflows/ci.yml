@@ -17,13 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
+          python-version: '3.11'
 
-      - name: Install @backstage/cli
-        run: npm install -g @backstage/cli
+      - name: Install PyYAML
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
 
       - name: Validate catalog files
         run: |
@@ -31,7 +33,6 @@ jobs:
           for file in catalog/*.yaml catalog-info.yaml; do
             if [ -f "$file" ]; then
               echo "Checking $file"
-              # Basic YAML syntax validation
               python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
             fi
           done
