@@ -33,7 +33,18 @@ jobs:
           for file in catalog/*.yaml catalog-info.yaml; do
             if [ -f "$file" ]; then
               echo "Checking $file"
-              python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+              python -c "
+          import yaml
+          import sys
+          try:
+              with open('$file', 'r') as f:
+                  # Use safe_load_all for files with multiple YAML documents
+                  docs = list(yaml.safe_load_all(f))
+                  print(f'  ✓ Valid YAML ({len(docs)} document(s))')
+          except Exception as e:
+              print(f'  ✗ Error: {e}')
+              sys.exit(1)
+          " || exit 1
             fi
           done
 
@@ -77,7 +88,17 @@ jobs:
           for file in scaffolder-templates/*.yaml; do
             if [ -f "$file" ]; then
               echo "Checking $file"
-              python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+              python -c "
+          import yaml
+          import sys
+          try:
+              with open('$file', 'r') as f:
+                  docs = list(yaml.safe_load_all(f))
+                  print(f'  ✓ Valid YAML ({len(docs)} document(s))')
+          except Exception as e:
+              print(f'  ✗ Error: {e}')
+              sys.exit(1)
+          " || exit 1
             fi
           done
 
