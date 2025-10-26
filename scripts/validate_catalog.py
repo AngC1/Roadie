@@ -1,25 +1,36 @@
 #!/usr/bin/env python3
 """
-Semantic & structural validation for Backstage/Roadie catalog YAML files.
+Semantic, structural & relational validation for Backstage/Roadie catalog YAML files.
 
 Checks:
-  - Multi-document YAML handling (supports --- separators)
-  - Required top-level fields: apiVersion, kind, metadata.name
-  - apiVersion must equal backstage.io/v1alpha1
-  - kind must be one of allowed kinds
-  - metadata.name must be kebab-case (lowercase letters, numbers, hyphens) and <= 63 chars
-  - Duplicate (kind, metadata.name) across all documents flagged as error
-  - Optional spec.owner warning if missing for Component / System / Domain / API / Group
-  - Reports summary counts by kind
-  - Gracefully skips empty documents
+    Structure:
+        - Multi-document YAML handling (supports --- separators)
+        - Required top-level fields: apiVersion, kind, metadata.name
+        - apiVersion must equal backstage.io/v1alpha1
+        - kind must be one of allowed kinds
+        - metadata.name must be kebab-case and <= 63 chars
+        - Duplicate (kind, metadata.name) detection
+    Ownership & relations:
+        - spec.owner entity existence (group:<name>)
+        - Component.spec.system reference to existing System
+        - System.spec.domain reference to existing Domain
+    Annotations:
+        - Warn if missing github.com/project-slug on Component/System/API
+        - Warn if missing backstage.io/techdocs-ref on Component/System
+    Reporting:
+        - Summary counts by kind
+        - Warnings listed (do not fail build)
+        - JSON output with --json flag (machine readable)
 Exit codes:
-  0 = success (no errors)
-  1 = errors found
+    0 = success (no errors)
+    1 = errors found
 Warnings do not fail build.
 """
 from __future__ import annotations
 import re
 import sys
+import json
+import argparse
 from pathlib import Path
 from typing import List, Tuple, Dict, Any
 
@@ -36,6 +47,11 @@ errors: List[str] = []
 warnings: List[str] = []
 seen: Dict[Tuple[str, str], Path] = {}
 counts: Dict[str, int] = {}
+
+documents: List[Dict[str, Any]] = []  # Flat list of all parsed entity docs with meta info
+
+def is_kebab(name: str) -> bool:
+    return bool(RE_NAME.match(name))
 
 def validate_document(doc: Dict[str, Any], source: Path, index: int) -> None:
     if not doc:  # Skip empty documents
@@ -80,6 +96,15 @@ def validate_document(doc: Dict[str, Any], source: Path, index: int) -> None:
             seen[key] = source
             counts[kind] = counts.get(kind, 0) + 1
 
+    # Annotation checks (soft warnings)
+    annotations = metadata.get("annotations", {}) if isinstance(metadata.get("annotations"), dict) else {}
+    if kind in {"Component", "System", "API"}:
+        if "github.com/project-slug" not in annotations:
+            warn(f"{kind} '{name}' missing annotation github.com/project-slug")
+    if kind in {"Component", "System"}:
+        if "backstage.io/techdocs-ref" not in annotations:
+            warn(f"{kind} '{name}' missing annotation backstage.io/techdocs-ref")
+
     # Owner warnings for relevant kinds
     if kind in {"Component", "System", "Domain", "API", "Group"}:
         spec = doc.get("spec", {})
@@ -87,8 +112,83 @@ def validate_document(doc: Dict[str, Any], source: Path, index: int) -> None:
         if not owner:
             warn(f"Kind {kind} missing spec.owner")
 
+    # Store for relation validation later
+    doc["__file__"] = str(source)
+    doc["__index__"] = index + 1
+    documents.append(doc)
+
+
+def validate_relations() -> None:
+    """Validate cross-entity references (owners, system->domain, component->system)."""
+    # Build lookup maps
+    by_kind_name: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    groups: Dict[str, Dict[str, Any]] = {}
+    for doc in documents:
+        kind = doc.get("kind")
+        name = doc.get("metadata", {}).get("name")
+        if not kind or not name:
+            continue
+        by_kind_name[(kind, name)] = doc
+        if kind == "Group":
+            groups[name] = doc
+
+    # Validate owners
+    for doc in documents:
+        kind = doc.get("kind")
+        spec = doc.get("spec", {})
+        owner = spec.get("owner")
+        if owner and isinstance(owner, str):
+            if owner.startswith("group:"):
+                group_name = owner.split(":", 1)[1]
+                if group_name not in groups:
+                    errors.append(f"{doc['__file__']} [doc {doc['__index__']}] owner references missing group '{group_name}'")
+            # Could extend for user: prefix
+        elif owner and not isinstance(owner, str):
+            warnings.append(f"{doc['__file__']} [doc {doc['__index__']}] owner field not a string")
+
+    # Component -> System relation
+    for doc in documents:
+        if doc.get("kind") == "Component":
+            spec = doc.get("spec", {})
+            system = spec.get("system")
+            if system:
+                sys_key = ("System", system)
+                if sys_key not in by_kind_name:
+                    errors.append(f"{doc['__file__']} [doc {doc['__index__']}] references missing System '{system}'")
+
+    # System -> Domain relation
+    for doc in documents:
+        if doc.get("kind") == "System":
+            spec = doc.get("spec", {})
+            domain = spec.get("domain")
+            if domain:
+                dom_key = ("Domain", domain)
+                if dom_key not in by_kind_name:
+                    errors.append(f"{doc['__file__']} [doc {doc['__index__']}] references missing Domain '{domain}'")
+
+
+def build_json_summary() -> Dict[str, Any]:
+    return {
+        "counts": counts,
+        "errors": errors,
+        "warnings": warnings,
+        "entities": [
+            {
+                "kind": d.get("kind"),
+                "name": d.get("metadata", {}).get("name"),
+                "file": d.get("__file__"),
+                "index": d.get("__index__"),
+            }
+            for d in documents if d.get("kind") and d.get("metadata", {}).get("name")
+        ],
+    }
+
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Validate Backstage/Roadie catalog YAML")
+    parser.add_argument("--json", action="store_true", help="Emit JSON summary to stdout (suppresses human output except errors)")
+    args = parser.parse_args()
+
     print("== Catalog Semantic Validation ==")
     print(f"Scanning {len(CATALOG_FILES)} files...\n")
 
@@ -106,7 +206,16 @@ def main() -> int:
         for idx, doc in enumerate(docs):
             validate_document(doc, file, idx)
 
-    # Summary
+    # Relation checks (after all docs loaded)
+    validate_relations()
+
+    if args.json:
+        # Emit JSON only
+        summary = build_json_summary()
+        print(json.dumps(summary, indent=2))
+        return 1 if errors else 0
+
+    # Human output
     print("\n== Summary ==")
     if counts:
         for kind in sorted(counts):
