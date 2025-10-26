@@ -107,3 +107,30 @@ jobs:
       - name: Check for broken links
         run: |
           echo "Documentation built successfully"
+
+  # tech-insights:
+  #   name: Tech Insights Scorecards
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request'
+  #   permissions:
+  #     contents: read
+  #     pull-requests: write
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Run Roadie Tech Insights Scorecard
+  #       uses: RoadieHQ/roadie-tech-insights-action@v1.0.2
+  #       with:
+  #         repo-token: ${{ secrets.GITHUB_TOKEN }}
+  #         api-token: ${{ secrets.ROADIE_API_KEY }}
+  #         catalog-info-path: './catalog-info.yaml'
+  #         # Provide either scorecard-id OR check-id below (replace the UUID placeholders)
+  #         # scorecard-id: 11111111-2222-3333-4444-555555555555
+  #         # check-id: 99999999-aaaa-bbbb-cccc-dddddddddddd
+  #         # entity-selector: 0
+  #
+  #     - name: Missing configuration notice
+  #       if: ${{ secrets.ROADIE_API_KEY == '' }}
+  #       run: |
+  #         echo "ROADIE_API_KEY secret is missing. Set it in repository settings to enable Tech Insights." && exit 1
