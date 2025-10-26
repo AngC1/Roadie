@@ -1,0 +1,68 @@
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: eulen-platform-domain
+  description: Dominio principal de la Plataforma Eulen que agrupa todos los sistemas y componentes
+  tags:
+    - platform
+    - eulen
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+spec:
+  owner: group:team-eulen
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: frontend-domain
+  description: Dominio de aplicaciones frontend y experiencia de usuario
+  tags:
+    - frontend
+    - ui
+    - ux
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+spec:
+  owner: group:team-eulen-frontend
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: backend-domain
+  description: Dominio de servicios backend, APIs y microservicios
+  tags:
+    - backend
+    - api
+    - microservices
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+spec:
+  owner: group:team-eulen-backend
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: data-domain
+  description: Dominio de datos, analytics y procesamiento
+  tags:
+    - data
+    - analytics
+    - processing
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+spec:
+  owner: group:team-eulen-backend
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: infrastructure-domain
+  description: Dominio de infraestructura, DevOps y plataforma
+  tags:
+    - infrastructure
+    - devops
+    - platform
+  annotations:
+    github.com/project-slug: AngC1/Roadie
+spec:
+  owner: group:engineering

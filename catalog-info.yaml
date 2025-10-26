@@ -12,6 +12,7 @@ spec:
     - ./catalog/eulen-api.yaml
     - ./catalog/eulen-system.yaml
     - ./catalog/groups.yaml
+    - ./catalog/domains.yaml
     - ./scaffolder-templates/angular-component.yaml
     - ./scaffolder-templates/nodejs-api.yaml
     - ./scaffolder-templates/spring-boot-service.yaml

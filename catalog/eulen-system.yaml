@@ -5,3 +5,4 @@ metadata:
   description: Eulen platform composed of frontend, Node.js API and Spring services.
 spec:
   owner: group:team-eulen
+  domain: eulen-platform-domain
