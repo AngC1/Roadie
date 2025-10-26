@@ -8,6 +8,7 @@ metadata:
     github.com/project-slug: AngC1/Roadie
     backstage.io/source-location: url:https://github.com/AngC1/Roadie
     backstage.io/techdocs-ref: url:https://github.com/AngC1/Roadie/tree/main
+    github.com/workflows: ci.yml,deploy.yml
     roadie.io/enabled: 'true'
     backstage.io/view-url: https://github.com/AngC1/Roadie/tree/main/src/eulen
     backstage.io/edit-url: https://github.com/AngC1/Roadie/edit/main/src/eulen

@@ -1,0 +1,109 @@
+name: Deploy Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+
+jobs:
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Frontend
+        run: npm run build:frontend
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/dist/frontend"
+          api_location: ""
+          output_location: ""
+
+  deploy-api:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build API
+        run: npm run build:api
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'eulen-api'
+          publish-profile: ${{ secrets.AZURE_API_PUBLISH_PROFILE }}
+          package: './dist/api'
+
+  deploy-spring:
+    name: Deploy Spring Boot
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build Spring Boot
+        run: mvn clean package -DskipTests
+        working-directory: ./src/eulen
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/eulen-spring:${{ github.sha }} .
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/eulen-spring:${{ github.sha }}
+        working-directory: ./src/eulen
+
+      - name: Deploy to Azure Kubernetes Service
+        uses: azure/k8s-deploy@v4
+        with:
+          manifests: |
+            k8s/deployment.yml
+            k8s/service.yml
+          images: |
+            ${{ secrets.ACR_LOGIN_SERVER }}/eulen-spring:${{ github.sha }}
