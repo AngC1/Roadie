@@ -57,6 +57,10 @@ def validate_document(doc: Dict[str, Any], source: Path, index: int) -> None:
     if not doc:  # Skip empty documents
         warnings.append(f"{source}: document #{index+1} is empty; skipping")
         return
+    # Skip pure OpenAPI spec files (root key 'openapi' and missing Backstage fields)
+    if 'openapi' in doc and 'apiVersion' not in doc and 'kind' not in doc:
+        warnings.append(f"{source} [doc {index+1}]: Skipping OpenAPI spec (not a Backstage entity)")
+        return
     def err(msg: str):
         errors.append(f"{source} [doc {index+1}]: {msg}")
     def warn(msg: str):

@@ -10,6 +10,7 @@ metadata:
   annotations:
     backstage.io/managed-by-location: file:catalog/eulen-api.yaml
     backstage.io/managed-by-origin-location: file:catalog-info.yaml
+    github.com/project-slug: AngC1/Roadie
 spec:
   type: openapi
   lifecycle: production
