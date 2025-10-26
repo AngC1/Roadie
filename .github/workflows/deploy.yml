@@ -1,109 +1,98 @@
-name: Deploy Pipeline
+name: Deploy to Roadie
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    tags:
-      - 'v*'
+    paths:
+      - 'catalog/**'
+      - 'catalog-info.yaml'
+      - 'scaffolder-templates/**'
+      - 'docs/**'
+      - 'mkdocs.yml'
 
 jobs:
-  deploy-frontend:
-    name: Deploy Frontend
+  notify-catalog-update:
+    name: Notify Catalog Update
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Frontend
-        run: npm run build:frontend
-        env:
-          NODE_ENV: production
-
-      - name: Deploy to Azure Static Web Apps
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "/dist/frontend"
-          api_location: ""
-          output_location: ""
-
-  deploy-api:
-    name: Deploy API
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build API
-        run: npm run build:api
-
-      - name: Deploy to Azure App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'eulen-api'
-          publish-profile: ${{ secrets.AZURE_API_PUBLISH_PROFILE }}
-          package: './dist/api'
-
-  deploy-spring:
-    name: Deploy Spring Boot
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
-
-      - name: Build Spring Boot
-        run: mvn clean package -DskipTests
-        working-directory: ./src/eulen
-
-      - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
-      - name: Build and push Docker image
+      - name: Catalog files changed
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/eulen-spring:${{ github.sha }} .
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/eulen-spring:${{ github.sha }}
-        working-directory: ./src/eulen
+          echo "Catalog files have been updated"
+          echo "Roadie will automatically refresh the catalog from:"
+          echo "https://github.com/AngC1/Roadie/blob/main/catalog-info.yaml"
+          
+      - name: List changed catalog files
+        run: |
+          echo "Changed files in this push:"
+          git diff --name-only HEAD~1 HEAD | grep -E '(catalog/|catalog-info.yaml|scaffolder-templates/|docs/|mkdocs.yml)' || echo "No catalog files changed"
 
-      - name: Deploy to Azure Kubernetes Service
-        uses: azure/k8s-deploy@v4
+  validate-before-deploy:
+    name: Validate Catalog Before Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          manifests: |
-            k8s/deployment.yml
-            k8s/service.yml
-          images: |
-            ${{ secrets.ACR_LOGIN_SERVER }}/eulen-spring:${{ github.sha }}
+          python-version: '3.11'
+
+      - name: Validate YAML files
+        run: |
+          pip install pyyaml
+          echo "Validating catalog YAML files..."
+          python -c "
+          import yaml
+          import sys
+          from pathlib import Path
+          
+          errors = []
+          catalog_files = list(Path('catalog').glob('*.yaml')) + [Path('catalog-info.yaml')]
+          
+          for file in catalog_files:
+              if file.exists():
+                  try:
+                      with open(file) as f:
+                          yaml.safe_load(f)
+                      print(f'✓ {file}')
+                  except Exception as e:
+                      errors.append(f'{file}: {e}')
+                      print(f'✗ {file}: {e}')
+          
+          if errors:
+              print('\nValidation failed!')
+              sys.exit(1)
+          else:
+              print('\nAll catalog files are valid!')
+          "
+
+  build-techdocs:
+    name: Build TechDocs
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'docs/') || contains(github.event.head_commit.modified, 'mkdocs.yml')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install MkDocs
+        run: |
+          pip install mkdocs-techdocs-core
+
+      - name: Build documentation
+        run: |
+          mkdocs build --strict
+          
+      - name: TechDocs built successfully
+        run: |
+          echo "TechDocs have been built successfully"
+          echo "Roadie will serve them from the repository"
