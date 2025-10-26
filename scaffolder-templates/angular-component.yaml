@@ -66,12 +66,16 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
     - id: publish
-      name: Publish
+      name: Publish to GitHub
       action: publish:github
       input:
         description: ${{ parameters.description }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
+        repoVisibility: public
+        deleteBranchOnMerge: true
+        allowRebaseMerge: true
+        allowSquashMerge: true
 
     - id: register
       name: Register
